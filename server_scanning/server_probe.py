@@ -8,13 +8,12 @@ from datetime import datetime
 from libnmap.process import NmapProcess
 from libnmap.parser import NmapParser, NmapParserException
 from time import sleep
+from db_manage import get_db,insert_scan_info,get_scanning_ip
 
 
 class ServerInfo(object):
 
-
-
-    def __init__(self,ip,source,options="-sV",method="tcp_syn"):
+    def __init__(self,ip,options="-sV"):
         """
         初始化函数
         :param ip:
@@ -22,9 +21,7 @@ class ServerInfo(object):
         :param options:
         """
         self.ip = ip  # 探测的ip
-        self.source = source  # ip来源，
         self.options = options  #nmap探测命令
-        self.method = method  # 探测方法
 
         # 参数
         self.detected_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -123,12 +120,6 @@ class ServerInfo(object):
             self.open_port_count = port_open
             self.closed_port_count = port_closed
             self.filter_port_count = port_filter
-            if port_filter == 0 and port_closed==0:
-                self.filter_port_count = 100 - port_open
-            elif port_filter == 0 and port_closed!=0:
-                self.filter_port_count = 100 - port_open-port_closed
-            elif port_filter != 0 and port_closed==0:
-                self.closed_port_count = 100 - port_open-port_filter
 
 
     def print_server(self):
@@ -136,7 +127,6 @@ class ServerInfo(object):
         server_dic = {
             "ip": self.ip,
             "hostname":self.host_name,
-            "source": self.source,
             "filter_count": self.filter_port_count,
             "closed_count": self.closed_port_count,
             "open_count": self.open_port_count,
@@ -144,12 +134,9 @@ class ServerInfo(object):
             "elapsed": self.elapsed,
             "state": self.status,
             "detected_time": self.detected_time,
-            "method": self.method
         }
         print server_dic
-        print self.raw_data
-        # from db_manage import insert_detect_info
-        # insert_detect_info(server_dic)
+        insert_scan_info(server_dic)
 
     def scan_result(self):
 
@@ -157,10 +144,11 @@ class ServerInfo(object):
         self.print_scan()
         self.print_server()
 
+
 if __name__ == "__main__":
 
-    detect_server = ['116.255.241.227']
-
+    detect_server = get_scanning_ip()
     for ip in detect_server:
-        t = ServerInfo(ip.strip(), "dns","-sV -p 43","tcp-syn")
+        print ip
+        t = ServerInfo(str(ip), "-sV -p 43")
         t.scan_result()

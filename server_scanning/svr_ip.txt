@@ -1,0 +1,13 @@
+whois.afilias-srs.net	1
+whois-dub.mm-registry.com	1
+whois.donuts.co	1
+whois.nic.accountant	1
+whois.unitedtld.com	1
+whois.nic.ac	1
+domain-registry-whois.l.google.com	1
+whois.nic.aeg	1
+whois.aero	1
+whois.aeda.net.ae	1
+whois.nic.afl	1
+whois.nic.af	1
+whois.nic.ag	1

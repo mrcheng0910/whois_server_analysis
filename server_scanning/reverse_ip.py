@@ -19,6 +19,7 @@ def domain2ip(domain):
     """
     ips = []
     res = dns.resolver.Resolver()
+    # 防止dns服务器拒绝服务，使用多个dns服务器
     res.nameservers = ['8.8.8.8', '8.8.4.4', '114.114.114.114', '208.67.222.222', '223.5.5.5','223.6.6.6']
 
     try:
@@ -47,23 +48,20 @@ def get_svr():
         svrs.append(svr)
 
     return svrs
-    # print svrs
-
 
 
 def get_svr_ip():
     """
     获取服务器的IP地址，并与已有ip比对,最后更新数据库
     """
-    print str(datetime.now()), '开始解析whois服务器域名'
     svrs = get_svr()
     for svr in svrs:
         ips = domain2ip(svr['domain'])
         ips = list(set(ips).union(set(svr['ips'])))
+        print str(datetime.now()), svr['domain'],'服务器探测'
         print ips
         insert_db(svr['domain'],ips)
 
-    print str(datetime.now()), '结束解析whois服务器域名'
 
 
 if __name__== '__main__':
