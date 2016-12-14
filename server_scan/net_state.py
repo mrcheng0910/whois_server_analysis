@@ -59,7 +59,7 @@ def ip_state():
         try:
             loss, delay,var, ttl_mean = ping(ip)
         except:
-            loss, delay, var, ttl_mean = 100, 100, 0, 0
+            loss, delay, var, ttl_mean = 100, 0, 0, 0   # 异常情况
 
         insert_net_state({
             'ip':ip,

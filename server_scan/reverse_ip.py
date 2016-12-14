@@ -54,7 +54,10 @@ def get_svr_ip():
     """
     获取服务器的IP地址，并与已有ip比对,最后更新数据库
     """
+    import random
+
     svrs = get_svr()
+    random.shuffle(svrs)  # 将列表进行随机
     for svr in svrs:
         ips = domain2ip(svr['domain'])
         ips = list(set(ips).union(set(svr['ips'])))
