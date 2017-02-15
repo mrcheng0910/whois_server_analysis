@@ -14,7 +14,7 @@
 * net_state.py  
     网络延迟探测
 * reverse_ip.py  
-    探测whois服务器域名的ip地址列表
+    探测whois服务器域名的ip地址列表，并更新数据库
 * server_probe.py   
     对ip的43端口进行tcp扫描
 * com_svr.txt   

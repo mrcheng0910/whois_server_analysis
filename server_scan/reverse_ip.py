@@ -1,8 +1,12 @@
-#!/usr/bin/python
 # encoding:utf-8
+
 """
-用来获取whois域名的IP地址
+获取WHOIS地址的IP地址，并且更新数据库
+
+作者：程亚楠
+时间：2017.2.15
 """
+
 from datetime import datetime
 import dns.resolver
 from db_manage import get_db
@@ -10,13 +14,14 @@ from db_manage import get_db
 
 def domain2ip(domain):
     """
-    域名解析为IP列表
+    获取解析到的域名IP列表
     参数
         domain: string 待解析的域名
 
     返回值
         ips: list 域名解析后的ip列表
     """
+
     ips = []
     res = dns.resolver.Resolver()
     # 防止dns服务器拒绝服务，使用多个dns服务器
@@ -32,19 +37,41 @@ def domain2ip(domain):
 
 
 def insert_db(domain,ips=None):
-
+    """
+    把ip更新到数据库中
+    :param domain:  待更新域名
+    :param ips:  更新的ips
+    """
     db = get_db()
-    col = db['svr_source']
-    col.update({'domain':domain},{'$set':{'ips':ips}},False,True)  # 修改某字段
+    col = db['com_svr']
+    col.update(
+        {'domain': domain},
+        {
+            '$set': {'ips':ips}
+        },
+        False,
+        True
+    )  # 修改某字段
 
 
 def get_svr():
+    """
+    获取域名WHOIS服务器的域名地址和ip列表
+    :return:
+    svrs: 服务器域名和ip列表
+    """
     svrs = []
     db =get_db()
-    col = db['svr_source']
-    svr_cur = col.find({},{'_id':0,'domain':1,'ips':1})
+    col = db['com_svr']
+    svr_cur = col.find(
+        {},
+        {   # 指定获取字段
+            '_id': 0,
+            'domain': 1,
+            'ips': 1
+        }
+    )
     for svr in svr_cur:
-        print svr
         svrs.append(svr)
 
     return svrs
@@ -58,15 +85,17 @@ def get_svr_ip():
 
     svrs = get_svr()
     random.shuffle(svrs)  # 将列表进行随机
+    svr_count = len(svrs)
     for svr in svrs:
-        ips = domain2ip(svr['domain'])
-        ips = list(set(ips).union(set(svr['ips'])))
-        print str(datetime.now()), svr['domain'],'服务器探测'
+        ips = domain2ip(svr['domain'])    # 新探测的服务器ips
+        ips = list(set(ips).union(set(svr['ips'])))   # 新与旧ip地址求和
+        print str(datetime.now()), svr['domain'],' whois ips detecting'
         print ips
-        insert_db(svr['domain'],ips)
+        insert_db(svr['domain'], ips)
+        svr_count -= 1
+        print str(svr_count), " domains remaining"
 
 
+if __name__ == '__main__':
 
-if __name__== '__main__':
-    # get_svr_ip()
     get_svr_ip()
