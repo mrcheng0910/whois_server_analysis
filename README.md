@@ -20,3 +20,13 @@
 
 1. 网络时延抖动
 2. ttl，判断操作系统
+
+## 依赖库
+1. nmap，安装命令:`apt-get install nmap`
+2. libnmap,使用以下命令进行安装
+    ```
+    $ git clone https://github.com/savon-noir/python-libnmap.git
+    $ cd python-libnmap
+    $ python setup.py install
+    ```
+3. 

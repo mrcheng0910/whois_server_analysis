@@ -1,7 +1,7 @@
 # encoding:utf-8
 
 """
-使用nmap的tcp sys探测ip的端口开放情况，并且存入到数据库中
+使用nmap的tcp sys或udp探测ip的43端口开放情况，并且存入到数据库中
 """
 
 from datetime import datetime
@@ -51,13 +51,14 @@ class ServerInfo(object):
 
         # 参数
         self.detected_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.filter_port_count = 0  # 未知端口数量
-        self.closed_port_count = 0  # 关闭端口数量
-        self.open_port_count = 0  #开放端口数量
-        self.ports = []   # 端口详细信息
         self.elapsed = 0   # 探测时间
         self.status = ""     # ip状态：up/down
         self.host_name = ""  # ip逆向解析
+        self.portid = 0
+        self.protocol = ""
+        self.port_state = ""
+        self.service = ""
+        self.banner = ""
 
         # 原始数据
         self.raw_data = ""
@@ -115,50 +116,30 @@ class ServerInfo(object):
 
             # 否则继续执行
 
-            port_closed = port_open = port_filter = 0
-
             for serv in host.services:
-                tmp_port = serv.port
-                tmp_protocol=serv.protocol
-                tmp_state=serv.state
-                tmp_service=serv.service
-                tmp_banner = serv.banner
-
-                self.ports.append({
-                    "portid":tmp_port,
-                    "protocol": tmp_protocol,
-                    "state":tmp_state,
-                    "service":tmp_service,
-                    "banner":tmp_banner
-                })
-
-                if tmp_state == 'open':
-                    port_open += 1
-                elif tmp_state == 'closed':
-                    port_closed +=1
-                elif tmp_state == 'filtered':
-                    port_filter += 1
-
-            self.open_port_count = port_open
-            self.closed_port_count = port_closed
-            self.filter_port_count = port_filter
-
+                self.port_state=serv.state
+                self.service=serv.service
+                self.banner = serv.banner
+                self.portid = serv.port
+                self.protocol = serv.protocol
 
     def print_server(self):
 
         server_dic = {
             "ip": self.ip,
             "hostname":self.host_name,
-            "filter_count": self.filter_port_count,
-            "closed_count": self.closed_port_count,
-            "open_count": self.open_port_count,
-            "ports": self.ports,
             "elapsed": self.elapsed,
             "state": self.status,
             "detected_time": self.detected_time,
+            "portid": self.portid,
+            "port_state": self.port_state,
+            "port_service": self.service,
+            "port_banner": self.banner,
+            "port_protocol": self.protocol
         }
         print server_dic
         insert_scan_info(server_dic)
+
 
     def scan_result(self):
 
@@ -173,7 +154,8 @@ if __name__ == "__main__":
     ip_count = len(detect_server)
     for ip in detect_server:
         print ip
-        t = ServerInfo(str(ip), "-sV -p 43")
+        # t = ServerInfo(str(ip), "-sV -sU -p 43")  # 使用udp协议扫描,需在管理员权限下运行
+        t = ServerInfo(str(ip),"-sV -p 43")        # 使用tcp协议扫描
         t.scan_result()
         ip_count -= 1
         print ip_count    # 剩余扫描数量

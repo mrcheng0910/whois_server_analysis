@@ -17,31 +17,9 @@ def get_db():
     return db
 
 
-def insert_scan_info(scan_data):
-    """
-    Insert the scan info of ip into the db
-    :param scan_data:
-    :return:
-    """
-    db = get_db()
-    col = db['scan_info']
-    print col.insert_one(scan_data)
 
 
-def get_scanning_ip():
-    """
-    Get the ips of domain-whois-server and return the uniq ip list
-    :return: ips
-    """
 
-    ips = []
-    db =get_db()
-    col = db['svr_source']
-    svr_cur = col.find({},{'_id':0,'ips':1})
-    for svr in svr_cur:
-        ips.extend(svr['ips'])
-
-    return list(set(ips))
 
 
 def get_open_ip():
