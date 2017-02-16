@@ -69,6 +69,7 @@ def ip_number(svr_ips):
     ips.extend(list(set(single_ips)))
     print "IP总数，说明WHOIS服务器共用ip"
     print len(ips)
+    return ips
 
 
 def ip_svr_number(svr_ips):
