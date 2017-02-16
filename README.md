@@ -22,6 +22,9 @@
 2. ttl，判断操作系统
 
 ## 依赖库
+
+项目程序在Ubuntu 14.04 64位系统下运行
+
 1. nmap，安装命令:`apt-get install nmap`
 2. libnmap,使用以下命令进行安装
     ```
@@ -30,3 +33,10 @@
     $ python setup.py install
     ```
 3. 
+
+## 常用数据库命令
+
+1. 分组统计,得到ip的端口状态
+```sql
+db.getCollection('ip_scan_result').aggregate([{$match:{'state':'up'}},{$group : {_id : "$port_state", num_tutorial : {$sum : 1}}}]);
+```

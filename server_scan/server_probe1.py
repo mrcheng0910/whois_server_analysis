@@ -33,7 +33,7 @@ def insert_scan_info(scan_data):
     :return:
     """
     db = get_db()
-    col = db['ip_scan_result']
+    col = db['ip_scan_result1']
     col.insert_one(scan_data)
 
 
