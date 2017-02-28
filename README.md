@@ -25,15 +25,19 @@
 
 项目程序在Ubuntu 14.04 64位系统下运行
 
-1. nmap，安装命令:`apt-get install nmap`
-2. libnmap,使用以下命令进行安装
+1. nmap  
+安装命令:`apt-get install nmap`
+2. libnmap  
+使用以下命令进行安装
     ```
     $ git clone https://github.com/savon-noir/python-libnmap.git
     $ cd python-libnmap
     $ python setup.py install
     ```
-3. 
-
+3. dnspython  
+安装命令：`pip install dnspython`
+4. pymongo  
+安装命令：`easy_install pymongo`
 ## 常用数据库命令
 
 1. 分组统计,得到ip的端口状态
