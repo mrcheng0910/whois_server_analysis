@@ -11,8 +11,10 @@
 
 """
 
+from collections import Counter
 from db_manage import get_col
 from localtime_to_utc import local2utc
+
 
 def analysis_no_ip():
     """
@@ -56,13 +58,35 @@ def analysis_no_ip():
 
 
 def ip_state_details(ips):
-
+    """
+    显示出ip的详细状态情况
+    :param ips:
+    :return:
+    """
     col = get_col('ip_scan_result1')
 
     for ip in ips:
-        scan_info = col.find({'ip':ip})
+        scan_info = col.find({'ip': ip})
         for i in scan_info:
             print i['ip'], i['state'], local2utc(i['detected_time'])
+
+
+def ip_state_count(ips):
+    """
+    统计不稳定IP的状态
+    :param ips:
+    :return:
+    """
+
+    col = get_col('ip_scan_result1')
+    for ip in ips:
+        c = Counter()
+        scan_info = col.find({'ip':ip})
+        scan_count =  scan_info.count()
+        for i in scan_info:
+            c[i['state']] += 1
+        print ip,
+        print '%.2f%%' % (c['up']/float(scan_count) * 100),'%.2f%%' % (c['down']/float(scan_count) * 100)
 
 
 if __name__ == '__main__':
@@ -70,3 +94,4 @@ if __name__ == '__main__':
     long_term_up_ips,instability_ips = analysis_no_ip()
     # ip_state_details(long_term_up_ips)
     # ip_state_details(instability_ips)
+    ip_state_count(instability_ips)
