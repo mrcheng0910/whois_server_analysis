@@ -1,11 +1,7 @@
 # encoding:utf-8
 
 """
-分析解析的IP关闭和打开情况
-1. 长期探测，发现其打开和关闭的时间分布
-2. 关闭的whois的ip的分布
-3. 打开的whois的ip的分布
-
+分析端口情况，包括是否开放以及开放的服务。
 """
 
 from pymongo import MongoClient

@@ -12,3 +12,13 @@
 分析whois.no-ip.com服务器的IP情况
 6. ip_svr_num.py`（论文数据插图）`  
 统计各个服务器解析IP的数量分布,包括：1.域名解析的IP数量分布；2.IP总数；3.IP负责服务器的数量分布。
+7. ip_location.py `(论文数据插图)`  
+统计IP的地理位置
+8. ip_availble_location.py  
+ 统计有效IP的地理位置
+9. ip_location目录  
+为地理位置存储文件数据
+10. ip_state.py  
+统计IP的状态分布（up/down）
+
+

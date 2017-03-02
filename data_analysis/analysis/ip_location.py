@@ -55,7 +55,7 @@ def ips_location():
         print i, c[i]
 
 
-def mul_ips_location():
+def multi_ips_location():
     """
     多个IP的WHOIS服务器分析
     """
@@ -74,5 +74,5 @@ def mul_ips_location():
 
 
 if __name__ == '__main__':
-    # ips_location()   # 单一数据分析
-    mul_ips_location()   # 多个ip分析
+    ips_location()   # 单一数据分析
+    # multi_ips_location()   # 多个ip分析

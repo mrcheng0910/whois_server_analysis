@@ -1,10 +1,36 @@
 # encoding:utf-8
 
 from ip_location.ip2Region import Ip2Region
-from ip_svr_num import get_svr_ip, ip_number
+from ip_svr_num import  ip_count
 from collections import Counter
+from pymongo import MongoClient
 
 searcher = Ip2Region('./ip_location/ip2region.db')  # IP定位
+
+def get_db():
+    """
+    连接数据库
+    :return
+    """
+    client = MongoClient('localhost', 27017)
+    db = client['whois_sever_analysis']
+    return db
+
+
+def get_svr_ip():
+    """
+    获取所有WHOIS地址和ip
+    :return:
+    """
+    ips = []
+    db = get_db()
+    col = db['ip_scan_result']
+    svr_ip_cur = col.find({'state':'up'},{'_id':0, 'ip':1})
+    for i in svr_ip_cur:
+        # print i
+        ips.append(i['ip'])
+
+    return ips
 
 
 def ip2region(ip=None):
@@ -31,50 +57,17 @@ def ips_location():
 
     :return:
     """
-    svr_ips = get_svr_ip()
-    ips = ip_number(svr_ips)
+    ips = get_svr_ip()
     c = Counter()
 
     for ip in ips:
-        if isinstance(ip, list):
-            pass
-        else:
-            country = ip2region(ip)
-            c[country] += 1
+        country = ip2region(ip)
+        c[country] += 1
 
     for i in c:
         print i, c[i]
 
 
-def test():
-    """
-
-    :return:
-    """
-    svr_ips = get_svr_ip()
-    ips = ip_number(svr_ips)
-    c = Counter()
-
-    for ip in ips:
-        if isinstance(ip, list):
-            print ip
-            for i in ip:
-
-                print ip2region(i)
-        else:
-            country = ip2region(ip)
-            c[country] += 1
-
-    # for i in c:
-    #     print i, c[i]
-
-
 if __name__ == '__main__':
-    # ips_location()
-    test()
-
-
-
-
-
-# print ip2region('8.8.8.8')
+    ips_location()
+    # test()

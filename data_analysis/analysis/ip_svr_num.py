@@ -19,6 +19,7 @@ def get_svr_ip():
     获取所有域名和ip
     :return:
     """
+
     col = get_col('com_svr')
     svr_ips = col.find({},{'_id': 0, 'ips': 1, 'domain': 1})
     return svr_ips
@@ -68,7 +69,7 @@ def ip_svr_number(svr_ips):
     """
     ip所负责WHOIS服务器的分布
     :param svr_ips:
-    :return:
+
     """
     c = Counter()
     for i in svr_ips:
@@ -81,11 +82,11 @@ def ip_svr_number(svr_ips):
 
 if __name__ == '__main__':
 
-    # draw()
+
     svr_ips = get_svr_ip()
-    # svr_ips_dist = svr_ips.clone()
-    # ip_number_distribution(svr_ips_dist)   # 服务器解析IP数量分布
+    svr_ips_dist = svr_ips.clone()
+    ip_number_distribution(svr_ips_dist)   # 服务器解析IP数量分布
     # ip_numbers = svr_ips.clone()
     # ip_count(ip_numbers)
 
-    ip_svr_number(svr_ips)
+    # ip_svr_number(svr_ips)
