@@ -22,8 +22,8 @@ from collections import defaultdict
 import copy
 
 # custom function
-from data_analysis.IP.db_manage import get_col
-from data_analysis.IP.localtime_to_utc import local2utc
+from db_manage import get_col
+from localtime_to_utc import local2utc
 
 
 def get_ip_state():

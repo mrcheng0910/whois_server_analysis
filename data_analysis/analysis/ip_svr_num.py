@@ -34,7 +34,7 @@ def ip_number_distribution(svr_ips):
     for i in svr_ips:
         ip_count = len(i['ips'])  # 域名解析IP的数量
 
-        if ip_count > 1:
+        if ip_count != 1:
             print i['domain'], ip_count  # 输出IP数量大于1的服务器
 
         c[ip_count] += 1  # 求IP数量的分布
@@ -76,7 +76,6 @@ def ip_svr_number(svr_ips):
         if len(i['ips']) == 1:
             c[i['ips'][0]] += 1
 
-    print c
     for i in c:
         print i,c[i]
 
@@ -84,9 +83,8 @@ if __name__ == '__main__':
 
 
     svr_ips = get_svr_ip()
-    svr_ips_dist = svr_ips.clone()
-    ip_number_distribution(svr_ips_dist)   # 服务器解析IP数量分布
+    # svr_ips_dist = svr_ips.clone()
+    # ip_number_distribution(svr_ips_dist)   # 服务器解析IP数量分布
     # ip_numbers = svr_ips.clone()
     # ip_count(ip_numbers)
-
-    # ip_svr_number(svr_ips)
+    ip_svr_number(svr_ips)

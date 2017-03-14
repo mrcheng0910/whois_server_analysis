@@ -40,7 +40,7 @@ def query_ip_state(ip):
     :return:
     """
     col = get_col('ip_scan_result_80')
-    ip_state = col.find({'ip':ip})
+    ip_state = col.find({'ip':ip},{'_id':0,'portid':0,'port_protocol':0,'scan_source':0})
     for i in ip_state:
         print i
 
@@ -142,19 +142,19 @@ if __name__ == '__main__':
     print len(diff_ips)
     print len(up_ips)
     print len(down_ips)
-    get_ip_port()
+    # get_ip_port()
     # 对经过长期探测的状态稳定的服务器（IP和domain）进行统计
-    # up_domains = pure_domain_state(up_ips)  # 开放的WHOIS服务器
-    # down_domains = pure_domain_state(down_ips)  # 关闭的服务器
+    up_domains = pure_domain_state(up_ips)  # 开放的WHOIS服务器
+    down_domains = pure_domain_state(down_ips)  # 关闭的服务器
 
-    # instability_domain = set(up_domains) & set(down_domains)  # 不稳定服务器
+    instability_domain = set(up_domains) & set(down_domains)  # 不稳定服务器
     # print list(instability_domain)
     # print len(instability_domain)
 
     # 长期打开服务器
-    # long_term_up_domains = list(set(up_domains)-instability_domain)
-    # print long_term_up_domains
-    # print len(long_term_up_domains)
+    long_term_up_domains = list(set(up_domains)-instability_domain)
+    print long_term_up_domains
+    print len(long_term_up_domains)
 
     # 长期关闭服务器
     # long_term_down_domains = list(set(down_domains)-instability_domain)
