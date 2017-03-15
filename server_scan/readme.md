@@ -19,3 +19,9 @@
     对ip的43端口进行tcp扫描
 * com_svr.txt   
     com的二级WHOIS服务器地址
+    
+
+## 特殊情况记录
+
+1. whois.no-ip.com  
+需要间隔2秒进行查询。

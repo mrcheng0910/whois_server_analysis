@@ -33,7 +33,7 @@ def insert_scan_info(scan_data):
     :return:
     """
     db = get_db()
-    col = db['ip_scan_result1']
+    col = db['ip_scan_result_udp']
     col.insert_one(scan_data)
 
 
@@ -111,7 +111,7 @@ class ServerInfo(object):
             self.elapsed = nmap_report.elapsed  # 探测时长
 
             # 如果host关闭状态，则结束
-            if self.status=='down':
+            if self.status == 'down':
                 return
 
             # 否则继续执行
@@ -154,8 +154,8 @@ if __name__ == "__main__":
     ip_count = len(detect_server)
     for ip in detect_server:
         print ip
-        # t = ServerInfo(str(ip), "-sV -sU -p 43")  # 使用udp协议扫描,需在管理员权限下运行
-        t = ServerInfo(str(ip),"-sV -p 43")        # 使用tcp协议扫描
+        t = ServerInfo(str(ip), "-sV -sU -p 43")  # 使用udp协议扫描,需在管理员权限下运行
+        # t = ServerInfo(str(ip),"-sV -p 43")        # 使用tcp协议扫描
         t.scan_result()
         ip_count -= 1
         print ip_count    # 剩余扫描数量

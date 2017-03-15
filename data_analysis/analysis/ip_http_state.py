@@ -25,13 +25,39 @@ def get_ip_state():
     ip_state = col.find({}, {'_id': 0, 'ip': 1, 'state': 1, 'detected_time': 1})
     return ip_state
 
+
 def get_ip_port():
     col = get_col('ip_scan_result_80')
-    ip_state = col.find({'state':'up','port_state':'open'})
 
-    for i in ip_state:
-        print i
+    test = col.find({'state': 'up'})
+    c = Counter()
+    for i in test:
+        c[i['port_state']] +=1
 
+
+    ip_port_filtered_cur = col.find({'state':'up','port_state':'filtered'},{'_id':0,'ip':1})
+    ip_port_filtered = []
+    for i in ip_port_filtered_cur:
+        print i['ip']
+        ip_port_filtered.append(i['ip'])
+
+    ip_port_open = []
+    ip_port_open_cur = col.find({'state': 'up', 'port_state': 'open'}, {'_id': 0, 'ip': 1})
+    for i in ip_port_open_cur:
+        print i['ip']
+        ip_port_open.append(i['ip'])
+
+    print len(ip_port_filtered)
+    print len(ip_port_open)
+
+    ip_port_filtered = list(set(ip_port_filtered))
+    ip_port_open = list(set(ip_port_open))
+    print len(ip_port_filtered)
+    print len(ip_port_open)
+
+    print set(ip_port_filtered) & set(ip_port_open)
+    print set(ip_port_open)- set(ip_port_filtered)
+    print set(ip_port_filtered) - set(ip_port_open)
 
 def query_ip_state(ip):
     """
@@ -43,8 +69,6 @@ def query_ip_state(ip):
     ip_state = col.find({'ip':ip},{'_id':0,'portid':0,'port_protocol':0,'scan_source':0})
     for i in ip_state:
         print i
-
-
 
 
 def classfy_ip_state():
@@ -70,10 +94,10 @@ def classfy_ip_state():
     # IP分类
     for i in ds:
         if len(ds[i]) > 1:    # 多个状态的IP
-            query_ip_state(i)
+            # query_ip_state(i)
             diff_ips.append(i)
-        else:
-            flag = ds[i].pop()  # 一个状态的ip
+        else:                  # 一个状态的ip
+            flag = ds[i].pop()
             if flag == 'down':
                 down_ips.append(i)  # 关闭状态
             elif flag == 'up':
@@ -106,13 +130,14 @@ def state_count(diff_ips):
     :return:
     """
 
-    col = get_col('ip_scan_result1')
+    col = get_col('ip_scan_result_80')
     for ip in diff_ips:
         scan_info = col.find({'ip': ip}, {'_id': 0, 'detected_time': 1, 'state': 1})
         c = Counter()
         for i in scan_info:
             c[i['state']] += 1
             # print ip['state'], local2utc(ip['detected_time'])
+        # print ip, 'up:',c['up'],'down:', c['down']
         print ip, c['up'], c['down']
         # print 'up', c['up']
         # print 'down', c['down']
@@ -138,23 +163,26 @@ def state_domain_count(diff_ips):
 
 
 if __name__ == '__main__':
-    diff_ips, up_ips, down_ips = classfy_ip_state()
-    print len(diff_ips)
-    print len(up_ips)
-    print len(down_ips)
-    # get_ip_port()
+    # diff_ips, up_ips, down_ips = classfy_ip_state()
+    # print '不稳定',len(diff_ips)
+    # print '长期开放',len(up_ips)
+    # print '长期关闭',len(down_ips)
+    # state_count(diff_ips)
+    # state_count(up_ips)
+    # state_count(down_ips)
+    get_ip_port()
     # 对经过长期探测的状态稳定的服务器（IP和domain）进行统计
-    up_domains = pure_domain_state(up_ips)  # 开放的WHOIS服务器
-    down_domains = pure_domain_state(down_ips)  # 关闭的服务器
+    # up_domains = pure_domain_state(up_ips)  # 开放的WHOIS服务器
+    # down_domains = pure_domain_state(down_ips)  # 关闭的服务器
 
-    instability_domain = set(up_domains) & set(down_domains)  # 不稳定服务器
+    # instability_domain = set(up_domains) & set(down_domains)  # 不稳定服务器
     # print list(instability_domain)
     # print len(instability_domain)
 
     # 长期打开服务器
-    long_term_up_domains = list(set(up_domains)-instability_domain)
-    print long_term_up_domains
-    print len(long_term_up_domains)
+    # long_term_up_domains = list(set(up_domains)-instability_domain)
+    # print long_term_up_domains
+    # print len(long_term_up_domains)
 
     # 长期关闭服务器
     # long_term_down_domains = list(set(down_domains)-instability_domain)

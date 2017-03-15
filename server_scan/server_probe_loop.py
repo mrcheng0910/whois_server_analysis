@@ -9,7 +9,7 @@ from libnmap.process import NmapProcess
 from libnmap.parser import NmapParser, NmapParserException
 from time import sleep
 from db_manage import get_db
-
+import random
 import schedule
 import time
 
@@ -140,11 +140,11 @@ class ServerInfo(object):
             "port_state": self.port_state,
             "port_service": self.service,
             "port_banner": self.banner,
-            "port_protocol": self.protocol
+            "port_protocol": self.protocol,
+            "scan_source":'172.29.152.152'
         }
         print server_dic
-        # insert_scan_info(server_dic)
-
+        insert_scan_info(server_dic)
 
     def scan_result(self):
 
@@ -152,9 +152,10 @@ class ServerInfo(object):
         self.print_scan()
         self.print_server()
 
+
 def main():
     detect_server = get_scanning_ip()
-    detect_server = detect_server[:5]
+    random.shuffle(detect_server)    # 把ip随机，这样每次探测的时候，时间都不一样
     ip_count = len(detect_server)
     for ip in detect_server:
         print ip
@@ -167,8 +168,8 @@ def main():
 
 if __name__ == "__main__":
 
-    # schedule.every(7).hours.do(main)
-    schedule.every(5).minutes.do(main)
+    schedule.every(7).hours.do(main)   # 7小时循环
+    # schedule.every(5).minutes.do(main)
 
     while True:
         schedule.run_pending()
