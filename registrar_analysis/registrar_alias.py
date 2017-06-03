@@ -8,51 +8,32 @@
 """
 
 
-from mysqldb import MySQL
+from fetch_reg_srv_data import update_reg_data
 from collections import defaultdict
 from collections import Counter
 import pandas as pd
 import pickle
 
 
-def registrar_alias():
-    """
-    统计域名注册商的别名，即在WHOIS信息中，域名注册商的名字出现多少种样式
-    包括大小写、名称中间有标点、名称后有标点
-    :return:
-    """
-    mysql = MySQL(HOST='172.29.152.249', USER='root', PASSWORD='platform')
-    mysql.connect()
-    mysql.select_db('domain_whois')
-
-    reg_alias = defaultdict(set)  # 存储转换后的注册商和原始注册商名称
-
-    for table_num in xrange(1, 101):
-        print 'table: ', str(table_num)
-        sql = """SELECT DISTINCT(sponsoring_registrar) FROM domain_whois_{n} \
-              WHERE tld = 'com' AND sponsoring_registrar != ''""".format(n=table_num)
-
-        registrar_data = mysql.execute_sql(sql)[0]
-
-        for i in registrar_data:
-            original_reg = i[0].strip()
-            lower_reg = original_reg.lower()
-            filter_reg = filter(str.isalnum, lower_reg)
-            reg_alias[filter_reg].add(original_reg)
-
-    mysql.disconnect()
-
-    return reg_alias
-
-def save_data(reg_alias):
-
-    # 将 obj 持久化保存到文件 reg_alias.txt 中
-    pickle.dump(reg_alias, open("reg_alias.txt", "w"))
-
-
 def open_data():
-    # 从 reg_alias.txt 中读取并恢复 obj 对象
-    reg_alias = pickle.load(open("reg_alias.txt", "r"))
+    """
+    打开原始注册商和服务器原始数据文件
+    """
+    reg_srv_data = pickle.load(open("registrar_srv_data.pkl", "r"))
+    return reg_srv_data
+
+
+def mange_data(reg_srv_data):
+    """
+    数据处理，去掉注册商名称中的特殊符号，并且与原始名称对应，建立字典
+    """
+    reg_alias = defaultdict(set)
+    for i in reg_srv_data:
+        original_reg = i[0].strip()
+        lower_reg = original_reg.lower()
+        filter_reg = filter(str.isalnum, lower_reg)
+        reg_alias[filter_reg].add(original_reg)
+
     return reg_alias
 
 
@@ -63,21 +44,15 @@ def count_reg(reg_alias):
     :return:
     """
     c = Counter()
-    print '总共注册商数量: ',len(reg_alias)
 
     for i in reg_alias:
-        for j in reg_alias[i]:
-            print j
         c[len(reg_alias[i])] += 1
-        # if len(reg_alias[i]) == 1:
-        #     print i, reg_alias[i]
-            # for j in reg_alias[i]:
-            #     print j
 
-    print '不同名称个数的注册商数量分布：'
-    print '名称个数  ','注册商数量'
+    # print '不同名称个数的注册商数量分布：'
+    # print '名称个数  ','注册商数量'
     # for i in c:
     #     print i, c[i]
+
 
 
 def open_com_reg_raw():
@@ -89,11 +64,12 @@ def open_com_reg_raw():
     return reg_df
 
 
-def find_same_reg(reg_df, reg_alias):
+def find_same_reg(reg_alias):
     """
     查找相同的域名注册商数量
     :return:
     """
+    reg_df = open_com_reg_raw()
     same_reg = []
     total_domain = 0
     for i in reg_df.values:
@@ -105,6 +81,7 @@ def find_same_reg(reg_df, reg_alias):
             total_domain += i[1]
 
     print 'com报告中的注册商数量: ', len(reg_df)
+    print '探测到的注册商数量: ', len(reg_alias)
     print '共同含有的注册商数量： ', len(same_reg)
     print '所占总共的比例：', len(same_reg)/float(len(reg_df))
     print '共同含有的注册商所负责的域名数量： ',total_domain
@@ -117,13 +94,12 @@ def find_same_reg(reg_df, reg_alias):
 
 
 def main():
+    update_reg_data(end_tb=8)  # 更新数据
+    reg_srv_data = open_data()  # 从文件中读取数据
+    reg_alias = mange_data(reg_srv_data)
 
-    # reg_alias = registrar_alias()  # 从数据库中获取所有注册商名称
-    # save_data(reg_alias)  # 持久性存储
-    reg_alias = open_data()  # 从文件中读取数据
-    count_reg(reg_alias)   # 统计分析
-    df = open_com_reg_raw()
-    find_same_reg(df,reg_alias)
+    # count_reg(reg_alias)   # 统计分析
+    find_same_reg(reg_alias)
 
 
 if __name__ == '__main__':

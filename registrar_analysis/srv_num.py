@@ -60,11 +60,19 @@ def count_reg_srv(srv_num):
     print '服务器总数：', len(c)
 
 
+def srv_list(srv_num):
+    """
+    返回所有服务器名称列表
+    """
+    return srv_num.keys()
+
+
 def main():
     srv_num= get_srvs()  # 从数据库中获取所有服务器名称和域名数量
     save_data(srv_num)  # 持久性存储
     srv_num = open_data()  # 从文件中读取数据
     count_reg_srv(srv_num)   # 统计分析
+    print srv_list(srv_num)
 
 
 if __name__ == '__main__':

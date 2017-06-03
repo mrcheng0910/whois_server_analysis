@@ -3,11 +3,9 @@
 域名注册商所含有的域名服务器分布
 """
 
-
 from mysqldb import MySQL
 from collections import defaultdict
 from collections import Counter
-import pandas as pd
 import pickle
 
 
@@ -24,7 +22,7 @@ def registrar_srvs():
     reg_srvs = defaultdict(set)   # 注册商含有WHOIS服务器情况
     srv_regs = defaultdict(set)   # 服务器被注册商使用情况
 
-    for table_num in xrange(1, 3):
+    for table_num in xrange(1, 5):
         print 'table: ', str(table_num)
         sql = """SELECT sponsoring_registrar, sec_whois_server FROM domain_whois_{n} WHERE tld='com' AND sponsoring_registrar!='' AND sec_whois_server!='' GROUP BY sponsoring_registrar,sec_whois_server""".format(n=table_num)
         registrar_data = mysql.execute_sql(sql)[0]
@@ -61,15 +59,13 @@ def open_data():
 def count_reg_srv(reg_srvs):
     """
     统计注册商含有的服务器数量
-    :param reg_srvs:
-    :return:
     """
     c = Counter()
     srv_amount = 0
     for i in reg_srvs:
         c[len(reg_srvs[i])] += 1
-        if len(reg_srvs[i]) == 3:
-            print i,reg_srvs[i]
+        # if len(reg_srvs[i]) == 3:
+        #     print i,reg_srvs[i]
 
     print '注册商数量', 'WHOIS服务器数量'
     for i in c:
@@ -77,26 +73,28 @@ def count_reg_srv(reg_srvs):
         print i, '\t', c[i]
     print srv_amount
 
+
 def count_srv_reg(srv_regs):
     """
     统计服务器被注册商使用情况
     """
     c = Counter()
     for i in srv_regs:
-        print i, srv_regs[i]
         c[len(srv_regs[i])] += 1
-        if len(srv_regs[i]) == 759:
-            print i, srv_regs[i]
+        # print i, srv_regs[i]
+        # if len(srv_regs[i]) == 759:
+        #     print i, srv_regs[i]
 
     print 'WHOIS服务器','注册商'
     for i in c:
         print i, c[i]
     print len(srv_regs)
 
+
 def main():
 
-    # reg_srvs,srv_regs = registrar_srvs()  # 从数据库中获取所有注册商名称
-    # save_data(reg_srvs,srv_regs)  # 持久性存储
+    reg_srvs,srv_regs = registrar_srvs()  # 从数据库中获取所有注册商名称
+    save_data(reg_srvs,srv_regs)  # 持久性存储
     reg_srvs, srv_regs = open_data()  # 从文件中读取数据
     count_reg_srv(reg_srvs)   # 统计分析
     count_srv_reg(srv_regs)
