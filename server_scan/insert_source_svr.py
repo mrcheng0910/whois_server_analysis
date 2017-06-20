@@ -2,8 +2,6 @@
 
 """
 将文件中的WHOIS服务器存入到Mongodb数据库中，默认服务器的ip为空
-作者：程亚楠
-时间：2017.2.15
 """
 
 from db_manage import get_db
@@ -19,7 +17,7 @@ def insert_svr(col_name,source_file_name):
 
     db = get_db()
     col = db[col_name]
-    svr_file = open(source_file_name,'r')  # 打开文件
+    svr_file = open(source_file_name, 'r')  # 打开文件
     for svr in svr_file.readlines():
         svr_name = svr.strip()
 

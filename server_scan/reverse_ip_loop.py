@@ -13,6 +13,7 @@ from db_manage import get_db
 import schedule
 import time
 
+
 def domain2ip(domain):
     """
     获取解析到的域名IP列表

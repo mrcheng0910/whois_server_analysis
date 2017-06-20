@@ -980,3 +980,4 @@ whois.namestream.com
 whois.dynadot13.com
 whois.dynadot16.com
 whois.bomboraregistrar.com
+whois.intracomme.com

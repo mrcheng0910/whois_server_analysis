@@ -1,3 +1,5 @@
 server_scan/*.txt
 *.db
 *.out
+*.pkl
+*.csv

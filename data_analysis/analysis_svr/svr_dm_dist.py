@@ -1,9 +1,12 @@
 # encoding:utf-8
 
-from collections import defaultdict,Counter
+"""
+服务器负责域名的数量分布情况，并且绘图
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
-
+from  collections import Counter
 
 def read_file_ip():
     """
@@ -11,19 +14,26 @@ def read_file_ip():
     :param file_name: 
     :return: 
     """
-    svr_count = []
+
+    srv_domain_num = {}
+    total_domain = 0
     fp = open('dist_of_domain.txt', 'r')
 
     for i in fp:
         svr_split = i.split('\t')
-        svr, count = svr_split[0], svr_split[1]
-        svr_count.append({
-            'svr': svr,
-            'count': int(count)
-        })
-
+        srv, count = svr_split[0], svr_split[1]
+        srv_domain_num[srv] = int(count.strip())
+        total_domain += int(count.strip())
     fp.close()
-    return svr_count
+
+    srv_counter = Counter(srv_domain_num)
+
+
+    for i,j in srv_counter.most_common(15):
+        print i,'\t',j
+
+    print total_domain
+
 
 
 def draw_graph():
@@ -71,5 +81,7 @@ def draw_graph():
 
 
 if __name__ == '__main__':
-    # print len(ip_up_down)
-    draw_graph()
+    read_file_ip()
+
+
+    # draw_graph()

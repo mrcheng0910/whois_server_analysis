@@ -37,20 +37,26 @@ def ip2region(ip=None):
 
 def ips_location():
     """
-    单一IP的地理位置
+    单一IP的地理位置，只分析单个的ip，不包括多于1个的ip
     :return:
     """
     svr_ips = get_svr_ip()
-    ips = ip_count(svr_ips)
+    ips = ip_count(svr_ips)   #ip集合，所有服务器的IP集合，不仅仅包括单个IP
     c = Counter()
-
+    single_count = 0
     for ip in ips:
         if isinstance(ip, list):
-            pass
+            # pass
+            for i in ip:
+                country = ip2region(i)
+                c[country] += 1
+                single_count += 1
         else:
             country = ip2region(ip)
             c[country] += 1
+            single_count += 1
 
+    print single_count
     for i in c:
         print i, c[i]
 

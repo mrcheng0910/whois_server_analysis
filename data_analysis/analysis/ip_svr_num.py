@@ -85,7 +85,6 @@ if __name__ == '__main__':
     svr_ips = get_svr_ip()
     # svr_ips_dist = svr_ips.clone()
     # ip_number_distribution(svr_ips_dist)   # 服务器解析IP数量分布
-    # ip_numbers = svr_ips.clone()
-    # ip_count(ip_numbers)
-    ip_svr_number(svr_ips)
-    print "结束"
+    ip_numbers = svr_ips.clone()
+    ip_count(ip_numbers)
+    # ip_svr_number(svr_ips)

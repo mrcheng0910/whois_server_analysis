@@ -160,7 +160,7 @@ def main():
     for ip in detect_server:
         print ip
         # t = ServerInfo(str(ip), "-sV -sU -p 43")  # 使用udp协议扫描,需在管理员权限下运行
-        t = ServerInfo(str(ip), "-sV -p 43")  # 使用tcp协议扫描
+        t = ServerInfo(str(ip), "-sV -p 43 ")  # 使用tcp协议扫描
         t.scan_result()
         ip_count -= 1
         print ip_count  # 剩余扫描数量

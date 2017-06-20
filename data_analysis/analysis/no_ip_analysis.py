@@ -27,7 +27,7 @@ def analysis_no_ip():
     # 得到whois.no-ip.com的所有解析IP
     col = get_col('com_svr')
     ips = col.find({'domain': 'whois.no-ip.com'},{'_id': 0, 'ips': 1})
-    ips = ips[0]['ips']
+    ips = ips[0]['ips']    # to retrieve the whole ips of whois.no-ip.com server
 
     # 获取所有ip的状态扫描结果
     down_ips = set()
@@ -43,16 +43,16 @@ def analysis_no_ip():
 
     # ip各状态统计
     instability_ips = list(down_ips & up_ips)  # 不稳定ip集合
-    print instability_ips
-    print len(instability_ips)
+    # print instability_ips
+    print 'instability ips',len(instability_ips)
 
     long_term_down_ips = list(down_ips - set(instability_ips))  #  长期关闭ip集合
-    print long_term_down_ips
-    print len(long_term_down_ips)
+    # print long_term_down_ips
+    print 'long_term_down_ips', len(long_term_down_ips)
 
     long_term_up_ips = list(up_ips - set(instability_ips))   # 长期开放ip集合
-    print long_term_up_ips
-    print len(long_term_up_ips)
+    # print long_term_up_ips
+    print 'long_term_up_ips', len(long_term_up_ips)
 
     return long_term_up_ips, instability_ips
 
@@ -89,9 +89,19 @@ def ip_state_count(ips):
         print '%.2f%%' % (c['up']/float(scan_count) * 100),'%.2f%%' % (c['down']/float(scan_count) * 100)
 
 
+def analyse_ip_port(ips):
+    col = get_col('ip_scan_result1')
+
+    for ip in ips:
+        scan_info = col.find({'ip': ip,'state':'up'})
+        for i in scan_info:
+            print i['ip'], i['port_state'], local2utc(i['detected_time'])
+
+
 if __name__ == '__main__':
 
     long_term_up_ips,instability_ips = analysis_no_ip()
     # ip_state_details(long_term_up_ips)
     # ip_state_details(instability_ips)
-    ip_state_count(instability_ips)
+    # ip_state_count(instability_ips)
+    analyse_ip_port(instability_ips)

@@ -24,6 +24,8 @@ from collections import Counter
 from collections import defaultdict
 import copy
 
+import matplotlib.pyplot as plt
+import numpy as np
 # custom function
 from db_manage import get_col
 from localtime_to_utc import local2utc
@@ -93,6 +95,51 @@ def state_count(ips, show_flag=False):
         print ip, c[True], c[False]
 
 
+
+def draw_graph():
+    """
+    绘制站点的域名解析数据，包括各个簇的域名个数,cname个数，ip个数等
+    :param domain_data: 字典，各个属性的数量
+    :return:
+    """
+    # domain_count = domain_data['domain_count']
+    # cname_count = domain_data['cname_count']
+    # ip_count = domain_data['ip_count']
+    # N = len(domain_count)
+    # ind = np.arange(1,N+1)
+    # width = 0.7
+    # plt.figure(1, figsize=(8, 6))
+    # p1 = plt.bar(ind, domain_count, width, align='center',color='r',bottom=[x+y for x, y in zip(ip_count, cname_count)])
+    # p2 = plt.bar(ind, cname_count, width, color='y',align='center',bottom=ip_count)
+    # p3 = plt.bar(ind,ip_count,width,color='c',align='center')
+    # x居中设置
+    # x_min, x_max = ind.min(), ind.max()
+    # plt.xlim(x_min - 1, x_max + 1)
+    # plt.ylabel('the numbers')
+    # plt.xlabel('sequence number')
+    # plt.xticks(np.arange(1, N+1, 3))
+    # plt.yticks()
+    # 设置legend
+    # plt.legend((p1[0], p2[0],p3[0]), ('Domain', 'CNAME', 'IP'),fontsize='11')
+
+    # plt.savefig('./graph/' + "domain_hist.png", dpi=75)
+    # plt.show()
+
+    x = np.linspace(0, 10, 500)
+    dashes = [10, 5, 100, 5]  # 10 points on, 5 off, 100 on, 5 off
+
+    fig, ax = plt.subplots()
+    line1, = ax.plot(x, np.sin(x), '--', linewidth=2,
+                     label='Dashes set retroactively')
+    line1.set_dashes(dashes)
+
+    line2, = ax.plot(x, -1 * np.sin(x), dashes=[30, 5, 10, 5],
+                     label='Dashes set proactively')
+
+    ax.legend(loc='lower right')
+    plt.show()
+
+
 if __name__ == '__main__':
 
     diff_ips, up_ips, down_ips = classify_ip_state()
@@ -101,7 +148,8 @@ if __name__ == '__main__':
     print '开放:', len(up_ips),
     print '不稳定:', len(diff_ips)
     print '状态统计'
-    state_count(diff_ips,True)
+    state_count(down_ips)
     # state_count(up_ips)
     # state_count(down_ips)
+    # draw_graph()
 

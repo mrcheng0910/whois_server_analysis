@@ -127,6 +127,9 @@ def state_domain_count(diff_ips):
 if __name__ == '__main__':
 
     diff_ips, up_ips, down_ips = classfy_ip_state()
+    print len(down_ips)
+    for ip in down_ips[0:5]:
+        print ip
 
     # 对经过长期探测的状态稳定的服务器（IP和domain）进行统计
     up_domains = pure_domain_state(up_ips)  # 开放的WHOIS服务器
@@ -137,13 +140,13 @@ if __name__ == '__main__':
     # print len(instability_domain)
 
     # 长期打开服务器
-    long_term_up_domains = list(set(up_domains)-instability_domain)
+    # long_term_up_domains = list(set(up_domains)-instability_domain)
     # print long_term_up_domains
     # print len(long_term_up_domains)
 
     # 长期关闭服务器
     long_term_down_domains = list(set(down_domains)-instability_domain)
-    # print  long_term_down_domains
+    print  long_term_down_domains
     # print len(long_term_down_domains)
-    state_count(diff_ips)
+    # state_count(diff_ips)
     # state_domain_count(diff_ips)

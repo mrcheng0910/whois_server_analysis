@@ -52,7 +52,7 @@ def count_reg(reg_alias, original_regs):
         c[len(reg_alias[i])] += 1
 
         # 显示特殊情况的注册商
-        if len(reg_alias[i]) == 3:
+        if len(reg_alias[i]) == 2:
             print i, reg_alias[i]
 
     print '未处理前共获取注册商数量： ', len(original_regs)
@@ -77,27 +77,32 @@ def find_same_reg(reg_alias):
     :return:
     """
     reg_df = open_com_reg_raw()
-    same_reg = []
+    same_reg_orignal = []
+    same_reg_alias = []
     total_domain = 0
     for i in reg_df.values:
         reg_name_raw = i[0].strip()
         reg_name_filter = str(filter(str.isalnum, reg_name_raw)).lower()
 
         if reg_name_filter in reg_alias.keys():
-            same_reg.append(reg_name_raw)
+            same_reg_orignal.append(reg_name_raw)
+            same_reg_alias.append(reg_name_filter)
             total_domain += i[1]
 
     print 'com报告中的注册商数量: ', len(reg_df)
     print '探测到的注册商数量: ', len(reg_alias)
-    print '共同含有的注册商数量： ', len(same_reg)
-    print '所占总共的比例：', len(same_reg)/float(len(reg_df))
+    print '共同含有的注册商数量： ', len(same_reg_orignal)
+    print '所占总共的比例：', len(same_reg_orignal)/float(len(reg_df))
     print '共同含有的注册商所负责的域名数量： ',total_domain
     print 'com总共含有的域名数量： ', sum(reg_df['num'])
     print '所占域名比例： ', float(total_domain)/sum(reg_df['num'])
 
     # 新存在注册商的信息
-    # for i in set(reg_df['reg_name'])-set(same_reg):
+    # for i in set(reg_df['reg_name'])-set(same_reg_orignal):
     #     print i
+
+    for i in set(reg_alias)-set(same_reg_alias):
+        print i
 
 
 def alias_query_reg(alias,reg_alias):
@@ -108,7 +113,7 @@ def alias_query_reg(alias,reg_alias):
 
 
 def main():
-    update_reg_data(end_tb=4)  # 更新数据
+    update_reg_data(end_tb=6)  # 更新数据
     reg_srv_data = open_data()  # 从文件中读取数据
     reg_alias, original_regs = mange_data(reg_srv_data)
     count_reg(reg_alias, original_regs)   # 统计分析

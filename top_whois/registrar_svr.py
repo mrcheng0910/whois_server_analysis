@@ -45,11 +45,11 @@ def count_reg_srv(reg_srvs):
     for i in reg_srvs:
         c[len(reg_srvs[i])] += 1
 
-        # if len(reg_srvs[i]) == 3:
-        #     print i
-        #     print reg_srvs[i]
+        if len(reg_srvs[i]) == 5:
+            print i
+            print reg_srvs[i]
 
-    print '注册商数量', 'WHOIS服务器数量'
+    print '注册商拥有服务器的数量', '\t', '注册注册商的数量'
     for i in c:
         srv_amount += c[i]
         print i, '\t', c[i]
@@ -63,8 +63,8 @@ def count_srv_reg(srv_regs):
     c = Counter()
     for i in srv_regs:
         c[len(srv_regs[i])] += 1
-        # if len(srv_regs[i]) == 377:
-        #     print i, srv_regs[i]
+        if len(srv_regs[i]) == 183:
+            print i, srv_regs[i]
 
     print '服务器被多少个注册商使用','这种情况的服务器数量'
     for i in c:
@@ -103,10 +103,10 @@ def query_reg(srv_regs):
 
 def main():
 
-    # update_reg_data(end_tb=20)
+    # update_reg_data(end_tb=6)
     reg_srv_data = open_data()
     reg_srvs, srv_regs = manage_data(reg_srv_data)
-    # count_reg_srv(reg_srvs)   # 统计分析
+    count_reg_srv(reg_srvs)   # 统计分析
     count_srv_reg(srv_regs)
 
     # query_reg(srv_regs)

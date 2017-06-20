@@ -22,14 +22,17 @@ def get_svr_ip():
     获取所有WHOIS地址和ip
     :return:
     """
+    c = Counter()
     ips = []
     db = get_db()
-    col = db['ip_scan_result']
+    col = db['ip_scan_result1']
     svr_ip_cur = col.find({'state':'up'},{'_id':0, 'ip':1})
     for i in svr_ip_cur:
         # print i
+        c[i['ip']] += 1
         ips.append(i['ip'])
-
+    print c
+    print len(c)
     return ips
 
 

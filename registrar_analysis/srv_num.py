@@ -24,9 +24,9 @@ def get_srvs():
 
         for i in registrar_data:
             try:
-                srv_num[i[0]] += int(i[1])
+                srv_num[i[0].lower()] += int(i[1])
             except:
-                srv_num[i[0]] = int(i[1])
+                srv_num[i[0].lower()] = int(i[1])
     mysql.disconnect()
 
     return srv_num
@@ -53,6 +53,7 @@ def count_reg_srv(srv_num):
     for i in c.most_common(top_srv):
         print i[0], '\t', i[1]
         top_srv_domain += i[1]
+
     total_domain_num = sum(c.values())
     print '域名总数: ', total_domain_num
     print 'top域名数量: ', top_srv_domain
@@ -72,7 +73,7 @@ def main():
     save_data(srv_num)  # 持久性存储
     srv_num = open_data()  # 从文件中读取数据
     count_reg_srv(srv_num)   # 统计分析
-    print srv_list(srv_num)
+    # srvs = srv_list(srv_num)
 
 
 if __name__ == '__main__':

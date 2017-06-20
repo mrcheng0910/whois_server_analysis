@@ -41,6 +41,3 @@ def update_reg_data(end_tb=2):
 if __name__ == '__main__':
     update_reg_data(end_tb=4)
 
-
-
-

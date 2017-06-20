@@ -5,21 +5,17 @@ database functions
 
 from pymongo import MongoClient
 
+HOST = 'localhost'
+client_name = 'whois_server_analysis'
+
 
 def get_db():
     """
     获取数据库
-    :return
-    其他：可以完善
     """
-    client = MongoClient('localhost', 27017)
-    db = client['whois_sever_analysis']
+    client = MongoClient(HOST, 27017)
+    db = client[client_name]
     return db
-
-
-
-
-
 
 
 def get_open_ip():
